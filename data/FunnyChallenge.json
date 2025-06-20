@@ -1,0 +1,18 @@
+{
+    "id": 143,
+    "name": "Funny Challenge",
+    "author": "Noyan",
+    "creators": ["Noyan"],
+    "verifier": "Noyan",
+    "verification": "https://www.youtube.com/watch?v=Csy9Kwnpfhw",
+    "percentToQualify": 20,
+    "password": "Copyable",
+    "records": [
+        {
+            "user": "Nobody",
+            "link": "",
+            "percent": 0,
+            "hz": 0
+        }
+    ]
+}
