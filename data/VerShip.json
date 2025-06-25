@@ -1,0 +1,18 @@
+{
+    "id": 182,
+    "name": "Ver Ship",
+    "author": "Noyan",
+    "creators": ["Noyan"],
+    "verifier": "Noyan",
+    "verification": "https://www.youtube.com/watch?v=cuAxsg8ScPw",
+    "percentToQualify": 14,
+    "password": "Copyable",
+    "records": [
+        {
+            "user": "Nobody",
+            "link": "",
+            "percent": 0,
+            "hz": 0
+        }
+    ]
+}
