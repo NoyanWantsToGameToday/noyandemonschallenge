@@ -1,0 +1,18 @@
+{
+    "id": 204,
+    "name": "Untitled Challenge",
+    "author": "Noyan",
+    "creators": ["Noyan"],
+    "verifier": "Noyan",
+    "verification": "https://youtu.be/CKLTw0Kfgp4?t=42",
+    "percentToQualify": 8,
+    "password": "Copyable",
+    "records": [
+        {
+            "user": "Nobody",
+            "link": "",
+            "percent": 0,
+            "hz": 0
+        }
+    ]
+}
