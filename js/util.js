@@ -1,12 +1,31 @@
 // https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
 export function getYoutubeIdFromUrl(url) {
-    return url.match(
-        /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/,
-    )?.[1] ?? '';
+    // Improved to reliably extract YouTube video IDs from various URL formats
+    // Matches both regular videos and livestreams
+    const match = url.match(
+        /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|v\/|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/
+    );
+    return match?.[1] ?? '';
 }
 
-export function embed(video) {
-    return `https://www.youtube.com/embed/${getYoutubeIdFromUrl(video)}`;
+export function getStartTimeFromUrl(url) {
+    // Extracts ?t= or &t= or ?start= or &start= from url
+    const tMatch = url.match(/[?&]t=(\d+)/);
+    const startMatch = url.match(/[?&]start=(\d+)/);
+    if (tMatch) return Number(tMatch[1]);
+    if (startMatch) return Number(startMatch[1]);
+    return 0;
+}
+
+export function embed(videoUrl) {
+    // Build embed url, with start time if present
+    const id = getYoutubeIdFromUrl(videoUrl);
+    const start = getStartTimeFromUrl(videoUrl);
+    let embedUrl = `https://www.youtube.com/embed/${id}`;
+    if (start > 0) {
+        embedUrl += `?start=${start}`;
+    }
+    return embedUrl;
 }
 
 export function localize(num) {
