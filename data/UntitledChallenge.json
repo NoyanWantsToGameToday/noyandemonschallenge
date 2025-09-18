@@ -5,13 +5,13 @@
     "creators": ["Noyan"],
     "verifier": "Noyan",
     "verification": "https://youtu.be/CKLTw0Kfgp4?t=42",
-    "percentToQualify": 8,
+    "percentToQualify": 0,
     "password": "Copyable",
     "records": [
         {
             "user": "Nobody",
             "link": "",
-            "percent": 0,
+            "percent": 5,
             "hz": 0
         }
     ]
