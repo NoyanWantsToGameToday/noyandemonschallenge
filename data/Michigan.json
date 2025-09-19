@@ -9,10 +9,16 @@
     "password": "Copyable",
     "records": [
         {
+            "user": "Kageyama", 
+            "link": "",
+            "percent": 17,
+            "hz": 60
+        }, 
+        {
             "user": "Mehmet2",
             "link": "",
             "percent": 13,
-            "hz": 60
+            "hz": a 
         }
     ]
 }
