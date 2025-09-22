@@ -1,0 +1,18 @@
+{
+    "id": 209,
+    "name": "CaramellBlaster",
+    "author": "Noyan",
+    "creators": ["Noyan"],
+    "verifier": "Noyan",
+    "verification": "https://youtu.be/WUTZT63O4b4",
+    "percentToQualify": 12,
+    "password": "Copyable",
+    "records": [
+        {
+            "user": "Nobody",
+            "link": "",
+            "percent": 0,
+            "hz": 0
+        }
+    ]
+}
