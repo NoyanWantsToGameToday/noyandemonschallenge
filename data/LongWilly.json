@@ -1,0 +1,18 @@
+{
+    "id": 217,
+    "name": "Long Willy",
+    "author": "Exence",
+    "creators": ["Exence"],
+    "verifier": "Exence",
+    "verification": "",
+    "percentToQualify": 40,
+    "password": "Copyable",
+    "records": [
+        {
+            "user": "Noyan",
+            "link": "https://youtu.be/ZMmjaaPArNw",
+            "percent": 100,
+            "hz": 60
+        }
+    ]
+}
