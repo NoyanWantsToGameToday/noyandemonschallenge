@@ -1,11 +1,16 @@
 // https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
-export function getYoutubeIdFromUrl(url) {
-    // Improved to reliably extract YouTube video IDs from various URL formats
-    // Matches both regular videos and livestreams
-    const match = url.match(
+export function getVideoIdFromUrl(url) {
+    // Check if it's a Medal.tv link
+    const medalMatch = url.match(/medal\.tv\/(?:games\/[^\/]+\/)?clips\/([a-zA-Z0-9]+)/);
+    if (medalMatch) {
+        return `medal_${medalMatch[1]}`;
+    }
+
+    // YouTube links
+    const ytMatch = url.match(
         /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|v\/|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/
     );
-    return match?.[1] ?? '';
+    return ytMatch?.[1] ?? '';
 }
 
 export function getStartTimeFromUrl(url) {
@@ -19,7 +24,15 @@ export function getStartTimeFromUrl(url) {
 
 export function embed(videoUrl) {
     // Build embed url, with start time if present
-    const id = getYoutubeIdFromUrl(videoUrl);
+    const id = getVideoIdFromUrl(videoUrl);
+    
+    // Handle Medal.tv embeds
+    if (id.startsWith('medal_')) {
+        const medalId = id.replace('medal_', '');
+        return `https://medal.tv/clip/${medalId}/embed`;
+    }
+    
+    // Handle YouTube embeds
     const start = getStartTimeFromUrl(videoUrl);
     let embedUrl = `https://www.youtube.com/embed/${id}`;
     if (start > 0) {
