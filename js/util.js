@@ -46,6 +46,10 @@ export function localize(num) {
 }
 
 export function getThumbnailFromId(id) {
+    if (id.startsWith('medal_')) {
+        const medalId = id.replace('medal_', '');
+        return `https://medal.tv/api/clips/${medalId}/thumbnail`;
+    }
     return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
 }
 
