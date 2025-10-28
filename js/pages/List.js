@@ -188,4 +188,9 @@ export default {
 
         this.loading = false;
     },
+    methods: {
+        embed,
+        score,
+    },
+};
 
