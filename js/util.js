@@ -30,13 +30,21 @@ export function getStartTimeFromUrl(url) {
 }
 
 export function embed(videoUrl) {
+    if (!videoUrl) {
+        return ''; // Return empty string for null/undefined URLs
+    }
+
     // Build embed url, with start time if present
     const id = getVideoIdFromUrl(videoUrl);
+    
+    if (!id) {
+        return ''; // Return empty string if no valid video ID was found
+    }
     
     // Handle Medal.tv embeds
     if (id.startsWith('medal_')) {
         const medalId = id.replace('medal_', '');
-        return `https://medal.tv/clip/${medalId}/embed`;
+        return `https://medal.tv/clips/${medalId}/embed`;
     }
     
     // Handle YouTube embeds
