@@ -1,45 +1,3 @@
-import { scale } from './config.js';
-
-// Adds comma to a number,
-// for example 1000 becomes 1,000
-export function localize(num) {
-    return num.toLocaleString(undefined, { minimumFractionDigits: scale });
-}
-
-// Rounds the value of num to the nth decimal, where n is the value of scale
-export function round(num) {
-    if (!("" + num).includes("e")) {
-        return +(Math.round(num + "e+" + scale) + "e-" + scale);
-    } else {
-        var arr = ("" + num).split("e");
-        var sig = "";
-        if (+arr[1] + scale > 0) {
-            sig = "+";
-        }
-        return +(
-            Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) +
-            "e-" +
-            scale
-        );
-    }
-}
-
-// Decreases the opacity of the variable color by the value of decrease
-export function rgbaBind(color, decrease) {
-    let [r, g, b, a] = color;
-
-    // Handle case where the value of a isn't defined
-    if (!a) {
-        a = 1;
-    }
-
-    // Sets the value of a to the value of a - decrease or 0.15, whichever is larger
-    // (prevents opacities of less than 0.15)
-    a = Math.max(a - decrease, 0.15);
-
-    return `rgba(${r},${g},${b},${a})`;
-}
-
 // Gets the YouTube video's ID from the URL
 // this is used to request a video's thumbnail from youtube's servers
 // and embed a youtube video onto the site (verifications)
@@ -93,28 +51,6 @@ export function shuffle(array) {
     return array;
 }
 
-// Sort function for packs, sorts by difficulty and moves
-// difficulty packs after other packs with the same difficulty
-export function sortPacks(packs) {
-    // packs with higher difficulty will display above lower
-    packs.sort(
-        (a, b) =>
-            b.difficulty - a.difficulty);
-
-        // push diff packs after the other packs in that tier
-        packs.sort(
-            (a, b) => {
-                // First, check if both packs are of the same difficulty
-                if (a.difficulty === b.difficulty) {
-                    // If they are of the same difficulty, sort packs without levels before those with levels
-                    if (!a.levels && b.levels) return 1;
-                    if (a.levels && !b.levels) return -1;
-                }
-                // If difficulties are different, maintain their original order
-                return 0;
-            }
-        );
-}
 
 export async function copyURL(text) {
     try {
