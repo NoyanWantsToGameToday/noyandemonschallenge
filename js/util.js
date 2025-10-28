@@ -3,16 +3,37 @@ export function getVideoIdFromUrl(url = '') {
     if (!url) return null;
 
     try {
+        // Convert blob URLs to regular URLs if needed
+        if (url.startsWith('blob:')) {
+            const blobUrl = new URL(url);
+            url = blobUrl.pathname.substring(1); // Remove leading slash
+        }
+
         // Check if it's a Medal.tv link
         const medalMatch = url.match(/medal\.tv\/(?:games\/[^\/]+\/)?clips\/([a-zA-Z0-9]+)/);
         if (medalMatch) {
             return `medal_${medalMatch[1]}`;
         }
 
+        // Handle YouTube video IDs directly (11 characters)
+        if (url.match(/^[a-zA-Z0-9_-]{11}$/)) {
+            return url;
+        }
+
         // YouTube links
         const ytMatch = url.match(
             /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|v\/|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/
         );
+        
+        // If no match but URL looks like a YouTube URL, try to extract ID from the pathname
+        if (!ytMatch && url.includes('youtube.com')) {
+            const paths = url.split('/').filter(Boolean);
+            const possibleId = paths[paths.length - 1];
+            if (possibleId && possibleId.match(/^[a-zA-Z0-9_-]{11}$/)) {
+                return possibleId;
+            }
+        }
+
         return ytMatch?.[1] || null;
     } catch (e) {
         console.error('Error parsing video URL:', e);
