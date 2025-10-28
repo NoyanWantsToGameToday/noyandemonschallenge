@@ -1,16 +1,23 @@
 // https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
-export function getVideoIdFromUrl(url) {
-    // Check if it's a Medal.tv link
-    const medalMatch = url.match(/medal\.tv\/(?:games\/[^\/]+\/)?clips\/([a-zA-Z0-9]+)/);
-    if (medalMatch) {
-        return `medal_${medalMatch[1]}`;
-    }
+export function getVideoIdFromUrl(url = '') {
+    if (!url) return null;
 
-    // YouTube links
-    const ytMatch = url.match(
-        /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|v\/|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/
-    );
-    return ytMatch?.[1] ?? '';
+    try {
+        // Check if it's a Medal.tv link
+        const medalMatch = url.match(/medal\.tv\/(?:games\/[^\/]+\/)?clips\/([a-zA-Z0-9]+)/);
+        if (medalMatch) {
+            return `medal_${medalMatch[1]}`;
+        }
+
+        // YouTube links
+        const ytMatch = url.match(
+            /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|v\/|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/
+        );
+        return ytMatch?.[1] || null;
+    } catch (e) {
+        console.error('Error parsing video URL:', e);
+        return null;
+    }
 }
 
 export function getStartTimeFromUrl(url) {
@@ -46,15 +53,25 @@ export function localize(num) {
 }
 
 export function getThumbnailFromId(id) {
-    // Don't try to get thumbnails for Medal clips
-    if (id?.startsWith('medal_')) {
-        return 'https://medal.tv/assets/favicon-32x32.png'; // Medal.tv favicon as placeholder
+    try {
+        if (!id) {
+            return '/assets/placeholder.png'; // Default placeholder image
+        }
+
+        if (id.startsWith('medal_')) {
+            return '/assets/medal-icon.png'; // Local Medal.tv icon
+        }
+
+        // For YouTube videos, return thumbnail only if ID is valid
+        if (id.match(/^[a-zA-Z0-9_-]{11}$/)) {
+            return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+        }
+
+        return '/assets/placeholder.png';
+    } catch (e) {
+        console.error('Error getting thumbnail:', e);
+        return '/assets/placeholder.png';
     }
-    // Only get thumbnails for YouTube videos
-    if (id) {
-        return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
-    }
-    return '';
 }
 
 // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
