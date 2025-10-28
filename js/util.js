@@ -51,30 +51,37 @@ export function getStartTimeFromUrl(url) {
 }
 
 export function embed(videoUrl) {
-    if (!videoUrl) {
-        return ''; // Return empty string for null/undefined URLs
-    }
+    try {
+        if (!videoUrl) {
+            console.warn('No video URL provided');
+            return ''; // Return empty string for null/undefined URLs
+        }
 
-    // Build embed url, with start time if present
-    const id = getVideoIdFromUrl(videoUrl);
-    
-    if (!id) {
-        return ''; // Return empty string if no valid video ID was found
+        // Build embed url, with start time if present
+        const id = getVideoIdFromUrl(videoUrl);
+        
+        if (!id) {
+            console.warn('Could not extract video ID from URL:', videoUrl);
+            return ''; // Return empty string if no valid video ID was found
+        }
+        
+        // Handle Medal.tv embeds
+        if (id.startsWith('medal_')) {
+            const medalId = id.replace('medal_', '');
+            return `https://medal.tv/clips/${medalId}/embed`;
+        }
+        
+        // Handle YouTube embeds
+        const start = getStartTimeFromUrl(videoUrl);
+        let embedUrl = `https://www.youtube.com/embed/${id}`;
+        if (start > 0) {
+            embedUrl += `?start=${start}`;
+        }
+        return embedUrl;
+    } catch (e) {
+        console.error('Error generating embed URL:', e);
+        return '';
     }
-    
-    // Handle Medal.tv embeds
-    if (id.startsWith('medal_')) {
-        const medalId = id.replace('medal_', '');
-        return `https://medal.tv/clips/${medalId}/embed`;
-    }
-    
-    // Handle YouTube embeds
-    const start = getStartTimeFromUrl(videoUrl);
-    let embedUrl = `https://www.youtube.com/embed/${id}`;
-    if (start > 0) {
-        embedUrl += `?start=${start}`;
-    }
-    return embedUrl;
 }
 
 export function localize(num) {
