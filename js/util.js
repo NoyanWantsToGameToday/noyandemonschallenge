@@ -1,128 +1,89 @@
-// https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
-export function getVideoIdFromUrl(url = '') {
-    if (!url) return null;
+import { scale } from './config.js';
 
-    try {
-        // Convert blob URLs to regular URLs if needed
-        if (url.startsWith('blob:')) {
-            const blobUrl = new URL(url);
-            url = blobUrl.pathname.substring(1); // Remove leading slash
-        }
-
-        // Check if it's a Medal.tv link
-        const medalMatch = url.match(/medal\.tv\/(?:[a-z]{2}\/)?(?:games\/[^\/]+\/)?clips\/([a-zA-Z0-9]+)(?:\?|$)/);
-        if (medalMatch) {
-            return `medal_${medalMatch[1]}`;
-        }
-
-        // Handle YouTube video IDs directly (11 characters)
-        if (url.match(/^[a-zA-Z0-9_-]{11}$/)) {
-            return url;
-        }
-
-        // YouTube links
-        const ytMatch = url.match(
-            /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|v\/|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/
-        );
-        
-        // If no match but URL looks like a YouTube URL, try to extract ID from the pathname
-        if (!ytMatch && url.includes('youtube.com')) {
-            const paths = url.split('/').filter(Boolean);
-            const possibleId = paths[paths.length - 1];
-            if (possibleId && possibleId.match(/^[a-zA-Z0-9_-]{11}$/)) {
-                return possibleId;
-            }
-        }
-
-        return ytMatch?.[1] || null;
-    } catch (e) {
-        console.error('Error parsing video URL:', e);
-        return null;
-    }
-}
-
-export function getStartTimeFromUrl(url) {
-    // Extracts ?t= or &t= or ?start= or &start= from url
-    const tMatch = url.match(/[?&]t=(\d+)/);
-    const startMatch = url.match(/[?&]start=(\d+)/);
-    if (tMatch) return Number(tMatch[1]);
-    if (startMatch) return Number(startMatch[1]);
-    return 0;
-}
-
-export function embed(videoUrl) {
-    try {
-        if (!videoUrl) {
-            console.warn('No video URL provided');
-            return ''; // Return empty string for null/undefined URLs
-        }
-
-        // Build embed url, with start time if present
-        const id = getVideoIdFromUrl(videoUrl);
-        
-        if (!id) {
-            console.warn('Could not extract video ID from URL:', videoUrl);
-            return ''; // Return empty string if no valid video ID was found
-        }
-        
-        // Handle Medal.tv links - embedding is blocked by X-Frame-Options.
-        // Return empty string so callers (components) can render a fallback
-        // (for example: a link or button to open the clip in a new tab).
-        if (id.startsWith('medal_')) {
-            return '';
-        }
-        
-        // Handle YouTube embeds
-        const start = getStartTimeFromUrl(videoUrl);
-        let embedUrl = `https://www.youtube.com/embed/${id}`;
-        if (start > 0) {
-            embedUrl += `?start=${start}`;
-        }
-        return embedUrl;
-    } catch (e) {
-        console.error('Error generating embed URL:', e);
-        return '';
-    }
-}
-
+// Adds comma to a number,
+// for example 1000 becomes 1,000
 export function localize(num) {
-    return num.toLocaleString(undefined, { minimumFractionDigits: 3 });
+    return num.toLocaleString(undefined, { minimumFractionDigits: scale });
 }
 
-export function getThumbnailFromId(id) {
-    try {
-        if (!id) {
-            return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM2NjY2NjYiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwczEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQyIDAtOC0zLjU4LTgtOHMzLjU4LTggOC04czggMy41OCA4IDgtMy41OCA4LTggOHoiLz48cGF0aCBmaWxsPSIjNjY2NjY2IiBkPSJNMTEgMTdoMnYtNmgtMnY2em0wLThoMnYtMmgtMnYyeiIvPjwvc3ZnPg==';
+// Rounds the value of num to the nth decimal, where n is the value of scale
+export function round(num) {
+    if (!("" + num).includes("e")) {
+        return +(Math.round(num + "e+" + scale) + "e-" + scale);
+    } else {
+        var arr = ("" + num).split("e");
+        var sig = "";
+        if (+arr[1] + scale > 0) {
+            sig = "+";
         }
-
-        if (id.startsWith('medal_')) {
-            // Return a data URI for a generic video icon instead of trying to load Medal thumbnails
-            return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM2NjY2NjYiIGQ9Ik0xNyAxMC41VjdjMC0uNTUtLjQ1LTEtMS0xSDRjLS41NSAwLTEgLjQ1LTEgMXYxMGMwIC41NS40NSAxIDEgMWgxMmMuNTUgMCAxLS40NSAxLTF2LTMuNWw0IDRWNi41bC00IDR6Ii8+PC9zdmc+';
-        }
-
-        // For YouTube videos, return thumbnail only if ID is valid
-        if (id.match(/^[a-zA-Z0-9_-]{11}$/)) {
-            return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
-        }
-
-        return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM2NjY2NjYiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwczEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQyIDAtOC0zLjU4LTgtOHMzLjU4LTggOC04czggMy41OCA4IDgtMy41OCA4LTggOHoiLz48cGF0aCBmaWxsPSIjNjY2NjY2IiBkPSJNMTEgMTdoMnYtNmgtMnY2em0wLThoMnYtMmgtMnYyeiIvPjwvc3ZnPg==';
-    } catch (e) {
-        console.error('Error getting thumbnail:', e);
-        return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM2NjY2NjYiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwczEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQyIDAtOC0zLjU4LTgtOHMzLjU4LTggOC04czggMy41OCA4IDgtMy41OCA4LTggOHoiLz48cGF0aCBmaWxsPSIjNjY2NjY2IiBkPSJNMTEgMTdoMnYtNmgtMnY2em0wLThoMnYtMmgtMnYyeiIvPjwvc3ZnPg==';
+        return +(
+            Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) +
+            "e-" +
+            scale
+        );
     }
 }
 
-// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+// Decreases the opacity of the variable color by the value of decrease
+export function rgbaBind(color, decrease) {
+    let [r, g, b, a] = color;
+
+    // Handle case where the value of a isn't defined
+    if (!a) {
+        a = 1;
+    }
+
+    // Sets the value of a to the value of a - decrease or 0.15, whichever is larger
+    // (prevents opacities of less than 0.15)
+    a = Math.max(a - decrease, 0.15);
+
+    return `rgba(${r},${g},${b},${a})`;
+}
+
+// Gets the YouTube video's ID from the URL
+// this is used to request a video's thumbnail from youtube's servers
+// and embed a youtube video onto the site (verifications)
+export function getYoutubeIdFromUrl(url) {
+    // For more info, visit https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url.
+    return url.match(
+        /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/,
+    )?.[1] ?? '';
+}
+
+// Extracts the start time (in seconds) from a YouTube URL
+export function getStartTimeFromUrl(url) {
+    // Look for t= or start= in the URL
+    const match = url.match(/[?&](?:t|start)=(\d+)/);
+    return match ? parseInt(match[1], 10) : 0;
+}
+
+// Creates an embed for the YouTube video, with optional start time from URL
+export function embed(video) {
+    const id = getYoutubeIdFromUrl(video);
+    const start = getStartTimeFromUrl(video);
+    let url = `https://www.youtube.com/embed/${id}`;
+    if (start > 0) {
+        url += `?start=${start}`;
+    }
+    return url;
+}
+
+// Gets the thumbnail of the YoutTube video to display with the embed
+export function getThumbnailFromId(id) {
+    return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+}
+
+// Randomly shuffles the elements in the array passed to the function
 export function shuffle(array) {
+    // For more info, visit https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array.
     let currentIndex = array.length, randomIndex;
 
-    // While there remain elements to shuffle.
-    while (currentIndex != 0) {
-        // Pick a remaining element.
+    while (currentIndex != 0) { // While there remain elements to shuffle:
+        // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
 
-        // And swap it with the current element.
+        // ...and swap it with the current element.
         [array[currentIndex], array[randomIndex]] = [
             array[randomIndex],
             array[currentIndex],
@@ -130,4 +91,35 @@ export function shuffle(array) {
     }
 
     return array;
+}
+
+// Sort function for packs, sorts by difficulty and moves
+// difficulty packs after other packs with the same difficulty
+export function sortPacks(packs) {
+    // packs with higher difficulty will display above lower
+    packs.sort(
+        (a, b) =>
+            b.difficulty - a.difficulty);
+
+        // push diff packs after the other packs in that tier
+        packs.sort(
+            (a, b) => {
+                // First, check if both packs are of the same difficulty
+                if (a.difficulty === b.difficulty) {
+                    // If they are of the same difficulty, sort packs without levels before those with levels
+                    if (!a.levels && b.levels) return 1;
+                    if (a.levels && !b.levels) return -1;
+                }
+                // If difficulties are different, maintain their original order
+                return 0;
+            }
+        );
+}
+
+export async function copyURL(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+    } catch (e) {
+        console.error(`error copying to clipboard: ${e}`);
+    }
 }
