@@ -65,11 +65,11 @@ export function embed(videoUrl) {
             return ''; // Return empty string if no valid video ID was found
         }
         
-        // Handle Medal.tv links - since embedding is blocked, return direct link
+        // Handle Medal.tv links - embedding is blocked by X-Frame-Options.
+        // Return empty string so callers (components) can render a fallback
+        // (for example: a link or button to open the clip in a new tab).
         if (id.startsWith('medal_')) {
-            const medalId = id.replace('medal_', '');
-            // Return the original URL or construct a direct clip URL
-            return videoUrl || `https://medal.tv/clips/${medalId}`;
+            return '';
         }
         
         // Handle YouTube embeds

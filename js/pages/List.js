@@ -30,7 +30,7 @@ export default {
                         </td>
                         <td class="level" :class="{ 'active': selected == i, 'error': !level }">
                             <button @click="selected = i">
-                                <span class="type-label-lg">{{ level?.name || \`Error (\${err}.json)\` }}</span>
+                                <span class="type-label-lg">{{ level && level.name ? level.name : ('Error (' + err + '.json)') }}</span>
                             </button>
                         </td>
                     </tr>
@@ -40,7 +40,15 @@ export default {
                 <div class="level" v-if="level">
                     <h1>{{ level.name }}</h1>
                     <LevelAuthors :author="level.author" :creators="level.creators" :verifier="level.verifier"></LevelAuthors>
-                    <iframe class="video" id="videoframe" :src="video" frameborder="0"></iframe>
+                    <div>
+                        <div v-if="video">
+                            <iframe class="video" id="videoframe" :src="video" frameborder="0"></iframe>
+                        </div>
+                        <div v-else class="video-fallback" style="display:flex;align-items:center;justify-content:center;gap:1rem;">
+                            <p>This clip cannot be embedded.</p>
+                            <a :href="videoSource" target="_blank" class="btn">Open clip</a>
+                        </div>
+                    </div>
                     <ul class="stats">
                         <li>
                             <div class="type-title-sm">Points when completed</div>
@@ -68,7 +76,7 @@ export default {
                                 <a :href="record.link" target="_blank" class="type-label-lg">{{ record.user }}</a>
                             </td>
                             <td class="mobile">
-                                <img v-if="record.mobile" :src="\`/assets/phone-landscape\${store.dark ? '-dark' : ''}.svg\`" alt="Mobile">
+                                <img v-if="record.mobile" :src="('/assets/phone-landscape' + (store.dark ? '-dark' : '') + '.svg')" alt="Mobile">
                             </td>
                             <td class="hz">
                                 <p>{{ record.hz }}Hz</p>
@@ -92,7 +100,7 @@ export default {
                         <h3>List Editors</h3>
                         <ol class="editors">
                             <li v-for="editor in editors">
-                                <img :src="\`/assets/\${roleIconMap[editor.role]}\${store.dark ? '-dark' : ''}.svg\`" :alt="editor.role">
+                                <img :src="('/assets/' + roleIconMap[editor.role] + (store.dark ? '-dark' : '') + '.svg')" :alt="editor.role">
                                 <a v-if="editor.link" class="type-label-lg link" target="_blank" :href="editor.link">{{ editor.name }}</a>
                                 <p v-else>{{ editor.name }}</p>
                             </li>
@@ -134,22 +142,25 @@ export default {
         selected: 0,
         errors: [],
         roleIconMap,
-        store
+        store,
+        toggledShowcase: false,
     }),
     computed: {
         level() {
             return this.list[this.selected][0];
         },
-        video() {
+        // Original video URL (not the embed). Used for opening Medal.tv clips in a new tab.
+        videoSource() {
+            if (!this.level) return '';
             if (!this.level.showcase) {
-                return embed(this.level.verification);
+                return this.level.verification;
             }
 
-            return embed(
-                this.toggledShowcase
-                    ? this.level.showcase
-                    : this.level.verification
-            );
+            return this.toggledShowcase ? this.level.showcase : this.level.verification;
+        },
+        // embed URL used in the iframe (empty if non-embeddable like Medal.tv)
+        video() {
+            return embed(this.videoSource);
         },
     },
     async mounted() {
@@ -177,8 +188,4 @@ export default {
 
         this.loading = false;
     },
-    methods: {
-        embed,
-        score,
-    },
-};
+
