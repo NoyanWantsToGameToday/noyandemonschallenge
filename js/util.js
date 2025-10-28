@@ -10,7 +10,7 @@ export function getVideoIdFromUrl(url = '') {
         }
 
         // Check if it's a Medal.tv link
-        const medalMatch = url.match(/medal\.tv\/(?:games\/[^\/]+\/)?clips\/([a-zA-Z0-9]+)/);
+        const medalMatch = url.match(/medal\.tv\/(?:[a-z]{2}\/)?(?:games\/[^\/]+\/)?clips\/([a-zA-Z0-9]+)(?:\?|$)/);
         if (medalMatch) {
             return `medal_${medalMatch[1]}`;
         }
