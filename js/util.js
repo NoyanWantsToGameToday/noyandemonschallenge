@@ -30,32 +30,3 @@ export function embed(video) {
 export function getThumbnailFromId(id) {
     return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
 }
-
-// Randomly shuffles the elements in the array passed to the function
-export function shuffle(array) {
-    // For more info, visit https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array.
-    let currentIndex = array.length, randomIndex;
-
-    while (currentIndex != 0) { // While there remain elements to shuffle:
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-
-        // ...and swap it with the current element.
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex],
-            array[currentIndex],
-        ];
-    }
-
-    return array;
-}
-
-
-export async function copyURL(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-    } catch (e) {
-        console.error(`error copying to clipboard: ${e}`);
-    }
-}
