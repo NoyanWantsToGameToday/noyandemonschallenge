@@ -46,11 +46,15 @@ export function localize(num) {
 }
 
 export function getThumbnailFromId(id) {
-    if (id.startsWith('medal_')) {
-        const medalId = id.replace('medal_', '');
-        return `https://medal.tv/api/clips/${medalId}/thumbnail`;
+    // Don't try to get thumbnails for Medal clips
+    if (id?.startsWith('medal_')) {
+        return 'https://medal.tv/assets/favicon-32x32.png'; // Medal.tv favicon as placeholder
     }
-    return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+    // Only get thumbnails for YouTube videos
+    if (id) {
+        return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+    }
+    return '';
 }
 
 // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array

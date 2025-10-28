@@ -43,7 +43,9 @@ export default {
                         <!-- Completed Levels -->
                         <div class="level" v-for="(level, i) in levels.slice(0, progression.length)">
                             <a :href="level.video" class="video">
-                                <img :src="getThumbnailFromId(getVideoIdFromUrl(level.video))" alt="">
+                                <div class="thumbnail">
+                                    <img :src="getThumbnailFromId(getVideoIdFromUrl(level.video))" :class="{'medal-thumb': getVideoIdFromUrl(level.video)?.startsWith('medal_')}" alt="">
+                                </div>
                             </a>
                             <div class="meta">
                                 <p>#{{ level.rank }}</p>
@@ -54,7 +56,9 @@ export default {
                         <!-- Current Level -->
                         <div class="level" v-if="!hasCompleted">
                             <a :href="currentLevel.video" target="_blank" class="video">
-                                <img :src="getThumbnailFromId(getVideoIdFromUrl(currentLevel.video))" alt="">
+                                <div class="thumbnail">
+                                    <img :src="getThumbnailFromId(getVideoIdFromUrl(currentLevel.video))" :class="{'medal-thumb': getVideoIdFromUrl(currentLevel.video)?.startsWith('medal_')}" alt="">
+                                </div>
                             </a>
                             <div class="meta">
                                 <p>#{{ currentLevel.rank }}</p>
@@ -78,7 +82,9 @@ export default {
                         <template v-if="givenUp && showRemaining">
                             <div class="level" v-for="(level, i) in levels.slice(progression.length + 1, levels.length - currentPercentage + progression.length)">
                                 <a :href="level.video" target="_blank" class="video">
-                                    <img :src="getThumbnailFromId(getVideoIdFromUrl(level.video))" alt="">
+                                    <div class="thumbnail">
+                                        <img :src="getThumbnailFromId(getVideoIdFromUrl(level.video))" :class="{'medal-thumb': getVideoIdFromUrl(level.video)?.startsWith('medal_')}" alt="">
+                                    </div>
                                 </a>
                                 <div class="meta">
                                     <p>#{{ level.rank }}</p>
