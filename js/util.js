@@ -1,27 +1,8 @@
-export function embed(videoUrl) {
-    if (!videoUrl) return '';
-
-    // Medal.tv
-    if (videoUrl.includes('medal.tv')) {
-        const match = videoUrl.match(/clips\/([a-zA-Z0-9]+)/);
-        if (match) {
-            return `https://medal.tv/clips/${match[1]}/embed`;
-        }
-        return videoUrl;
-    }
-
-    // YouTube
-    const ytMatch = videoUrl.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-    );
-    if (ytMatch) {
-        return `https://www.youtube.com/embed/${ytMatch[1]}`;
-    }
-
-    return '';
-}
+// Extracts a video ID from a URL
+// YouTube → "VIDEO_ID"
+// Medal   → "medal_VIDEO_ID"
 export function getVideoIdFromUrl(url) {
-    if (!url) return null;
+    if (!url || typeof url !== 'string') return null;
 
     // YouTube
     const ytMatch = url.match(
@@ -40,34 +21,30 @@ export function getVideoIdFromUrl(url) {
     return null;
 }
 
-export function shuffle(array) {
-    if (!Array.isArray(array)) return [];
-
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-
-    return array;
-}
-
-
-export function localize(num) {
-    if (num === null || num === undefined || isNaN(num)) {
-        return '0';
-    }
-    return Number(num).toLocaleString();
-}
-
+// Returns a thumbnail URL based on ID
 export function getThumbnailFromId(id) {
     if (!id) {
         return '/assets/placeholder.png';
     }
 
+    // Medal.tv → local icon (they block thumbnails & embeds)
     if (id.startsWith('medal_')) {
         return '/assets/medal-icon.png';
     }
 
-    // YouTube
+    // YouTube thumbnail
     return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+}
+
+// Fisher–Yates shuffle
+export function shuffle(array) {
+    if (!Array.isArray(array)) return [];
+
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    return arr;
 }
