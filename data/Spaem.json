@@ -1,0 +1,18 @@
+{
+    "id": 230,
+    "name": "Spaem",
+    "author": "Noyan",
+    "creators": ["Noyan"],
+    "verifier": "Noyan",
+    "verification": "https://youtu.be/jid4gTHSbAU",
+    "percentToQualify": 65,
+    "password": "Copyable",
+    "records": [
+        {
+            "user": "Nobody",
+            "link": "",
+            "percent": 0,
+            "hz": 0
+        }
+    ]
+}
