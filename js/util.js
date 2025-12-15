@@ -1,6 +1,24 @@
+// Returns an iframe embed URL, or null if embedding is not allowed
+export function embed(videoUrl) {
+    if (!videoUrl || typeof videoUrl !== 'string') return null;
+
+    // Medal.tv — embedding is blocked
+    if (videoUrl.includes('medal.tv')) {
+        return null;
+    }
+
+    // YouTube
+    const ytMatch = videoUrl.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+    if (ytMatch) {
+        return `https://www.youtube.com/embed/${ytMatch[1]}`;
+    }
+
+    return null;
+}
+
 // Extracts a video ID from a URL
-// YouTube → "VIDEO_ID"
-// Medal   → "medal_VIDEO_ID"
 export function getVideoIdFromUrl(url) {
     if (!url || typeof url !== 'string') return null;
 
@@ -27,12 +45,10 @@ export function getThumbnailFromId(id) {
         return '/assets/placeholder.png';
     }
 
-    // Medal.tv → local icon (they block thumbnails & embeds)
     if (id.startsWith('medal_')) {
         return '/assets/medal-icon.png';
     }
 
-    // YouTube thumbnail
     return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
 }
 
