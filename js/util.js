@@ -32,11 +32,6 @@ export function getThumbnailFromId(id) {
             return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM2NjY2NjYiIGQ9Ik0xNyAxMC41VjdjMC0uNTUtLjQ1LTEtMS0xSDRjLS41NSAwLTEgLjQ1LTEgMXYxMGMwIC41NS40NSAxIDEgMWgxMmMuNTUgMCAxLS40NSAxLTF2LTMuNWw0IDRWNi41bC00IDR6Ii8+PC9zdmc+';
         }
 
-        // For YouTube videos, return thumbnail only if ID is valid
-export function getThumbnailFromId(id) {
-            return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
-        }
-
         return '/assets/placeholder.png';
         return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM2NjY2NjYiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwczEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQyIDAtOC0zLjU4LTgtOHMzLjU4LTggOC04czggMy41OCA4IDgtMy41OCA4LTggOHoiLz48cGF0aCBmaWxsPSIjNjY2NjY2IiBkPSJNMTEgMTdoMnYtNmgtMnY2em0wLThoMnYtMmgtMnYyeiIvPjwvc3ZnPg==';
     } catch (e) {
