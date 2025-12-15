@@ -45,10 +45,12 @@ export function getThumbnailFromId(id) {
         return '/assets/placeholder.png';
     }
 
+    // Medal.tv
     if (id.startsWith('medal_')) {
         return '/assets/medal-icon.png';
     }
 
+    // YouTube
     return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
 }
 
@@ -63,4 +65,13 @@ export function shuffle(array) {
     }
 
     return arr;
+}
+
+// Formats numbers for display (used in Leaderboard)
+export function localize(num) {
+    if (num === null || num === undefined || isNaN(num)) {
+        return '0';
+    }
+
+    return Number(num).toLocaleString();
 }
