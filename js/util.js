@@ -12,7 +12,13 @@ export function embed(videoUrl) {
         }
         
         // Handle YouTube embeds
-@ -91,11 +92,12 @@ export function localize(num) {
+export function localize(num) {
+    if (num === null || num === undefined || isNaN(num)) {
+        return '0';
+    }
+
+    return Number(num).toLocaleString();
+}
 export function getThumbnailFromId(id) {
     try {
         if (!id) {
@@ -27,7 +33,7 @@ export function getThumbnailFromId(id) {
         }
 
         // For YouTube videos, return thumbnail only if ID is valid
-@ -103,10 +105,10 @@ export function getThumbnailFromId(id) {
+export function getThumbnailFromId(id) {
             return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
         }
 
