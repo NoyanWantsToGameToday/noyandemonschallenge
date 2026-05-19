@@ -1,0 +1,18 @@
+{
+    "id": 265,
+    "name": "Spam Challenge 3",
+    "author": "Noyan",
+    "creators": ["Noyan"],
+    "verifier": "Noyan",
+    "verification": "https://youtu.be/W5jEFKzhfT4",
+    "percentToQualify": 8,
+    "password": "Copyable",
+    "records": [
+        {
+            "user": "Nobody",
+            "link": "",
+            "percent": 0,
+            "hz": 0
+        }
+    ]
+}
